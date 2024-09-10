@@ -37,8 +37,7 @@ public class PostInMemoryRepository: IPostRepository
         Post? postToRemove = posts.SingleOrDefault(p => p.Id == id); 
         if (postToRemove is null) 
         { 
-            throw new InvalidOperationException( 
-                $"Post with ID '{id}' not found"); 
+            throw new InvalidOperationException($"Post with ID '{id}' not found"); 
         } 
         posts.Remove(postToRemove); 
         return Task.CompletedTask; 

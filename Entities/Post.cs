@@ -6,5 +6,11 @@ public class Post
    public string Title { get; set; }
    public String Body { get; set; }
    public int UserId { get; set; }
-   // Hey this line was written by me
+
+   public Post(string title, string body, int userId)
+   {
+      Title = title;
+      Body = body;
+      UserId = userId;
+   }
 }
