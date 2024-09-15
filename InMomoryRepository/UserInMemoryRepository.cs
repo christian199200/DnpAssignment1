@@ -9,59 +9,28 @@ public class UserInMemoryRepository : IUserRepository
 
     public UserInMemoryRepository()
     {
-        _ = AddAsync(new User("chris", "1992")).Result;
-        _ = AddAsync(new User("nya", "4321")).Result;
-        _ = AddAsync(new User("modeste", "1243")).Result;
-        _ = AddAsync(new User("sham", "2143")).Result;
+        // Adding some dummy data
+        users.Add(new User(1, "Alice", "password123"));
+        users.Add(new User(2, "Bob", "password456"));
     }
-    
-    public Task<User> AddAsync(User user)
+
+    public Task AddAsync(User user)
     {
-        user.Id = users.Any()
-            ? users.Max(u => u.Id) + 1
-            : 1;
+        user.Id = users.Any() ? users.Max(u => u.Id) + 1 : 1;
         users.Add(user);
         return Task.FromResult(user);
     }
 
-    public Task UpdateAsync(User user)
+    public Task<User?> GetByIdAsync(int userId)
     {
-        User? existingUser = users.SingleOrDefault(u => u.Id == user.Id);
-        if (existingUser is null)
-        {
-            throw new NotFoundException($"User with ID '{user.Id}' not found");
-        }
-
-        users.Remove(existingUser);
-        users.Add(user);
-
-        return Task.CompletedTask;
-    }
-
-    public Task DeleteAsync(int id)
-    {
-        var userToRemove = users.SingleOrDefault(u => u.Id == id);
-        if (userToRemove is null)
-        {
-            throw new NotFoundException($"User with ID '{id}' not found");
-        }
-
-        users.Remove(userToRemove);
-        return Task.CompletedTask;
-    }
-
-    public Task<User> GetSingleAsync(int id)
-    {
-        var user = users.SingleOrDefault(u => u.Id == id);
-        if (user is null)
-        {
-            throw new NotFoundException($"User with ID '{id}' not found");
-        }
+        var user = users.SingleOrDefault(u => u.Id == userId);
+        if (user == null)
+            throw new InvalidOperationException($"User with ID {userId} not found");
 
         return Task.FromResult(user);
     }
 
-    public IQueryable<User> GetMany()
+    public IQueryable<User> GetAll()
     {
         return users.AsQueryable();
     }
