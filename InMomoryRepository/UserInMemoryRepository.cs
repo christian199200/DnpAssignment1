@@ -1,3 +1,4 @@
+using System.Collections;
 using Entities;
 using RepositoryContracts;
 
@@ -21,7 +22,12 @@ public class UserInMemoryRepository : IUserRepository
         return Task.FromResult(user);
     }
 
-    public Task<User?> GetByIdAsync(int userId)
+    public Task<IEnumerable> GetAllUsersAsync()
+    {
+        return Task.FromResult<IEnumerable>(users.AsEnumerable());
+    }
+
+    public Task<User> GetByIdAsync(int userId)
     {
         var user = users.SingleOrDefault(u => u.Id == userId);
         if (user == null)
