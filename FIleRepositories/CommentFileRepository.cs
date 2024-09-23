@@ -28,34 +28,44 @@ public class CommentFileRepository : ICommentRepository
         return comment;
     }
 
-    public Task UpdateAsync(Comment comment)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Comment> GetSingleAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IQueryable<Comment> GetMany()
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Comment> GetByIdAsync(int commentId)
+    public async Task UpdateAsync(Comment comment)
     {
         string commentsAsJson = await File.ReadAllTextAsync(filePath);
         List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(commentsAsJson) ?? new List<Comment>();
-        return comments.SingleOrDefault(c => c.Id == commentId);
+
+        var existingComment = comments.SingleOrDefault(c => c.Id == comment.Id);
+        if (existingComment != null)
+        {
+            comments.Remove(existingComment);
+            comments.Add(comment);
+            commentsAsJson = JsonSerializer.Serialize(comments);
+            await File.WriteAllTextAsync(filePath, commentsAsJson);
+        }
     }
 
-    public IQueryable<Comment> GetAll()
+    public async Task DeleteAsync(int id)
+    {
+        string commentsAsJson = await File.ReadAllTextAsync(filePath);
+        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(commentsAsJson) ?? new List<Comment>();
+
+        var commentToRemove = comments.SingleOrDefault(c => c.Id == id);
+        if (commentToRemove != null)
+        {
+            comments.Remove(commentToRemove);
+            commentsAsJson = JsonSerializer.Serialize(comments);
+            await File.WriteAllTextAsync(filePath, commentsAsJson);
+        }
+    }
+
+    public async Task<Comment> GetSingleAsync(int id)
+    {
+        string commentsAsJson = await File.ReadAllTextAsync(filePath);
+        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(commentsAsJson) ?? new List<Comment>();
+
+        return comments.SingleOrDefault(c => c.Id == id);
+    }
+
+    public IQueryable<Comment> GetMany()
     {
         string commentsAsJson = File.ReadAllTextAsync(filePath).Result;
         List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(commentsAsJson) ?? new List<Comment>();

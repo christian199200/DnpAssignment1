@@ -28,24 +28,48 @@ public class PostFileRepository : IPostRepository
         return post;
     }
 
-    public Task UpdateAsync(Post post)
+    public async Task UpdateAsync(Post post)
     {
-        throw new NotImplementedException();
+        string postsAsJson = await File.ReadAllTextAsync(filePath);
+        List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson) ?? new List<Post>();
+
+        var existingPost = posts.SingleOrDefault(p => p.Id == post.Id);
+        if (existingPost != null)
+        {
+            posts.Remove(existingPost);
+            posts.Add(post);
+            postsAsJson = JsonSerializer.Serialize(posts);
+            await File.WriteAllTextAsync(filePath, postsAsJson);
+        }
     }
 
-    public Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        string postsAsJson = await File.ReadAllTextAsync(filePath);
+        List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson) ?? new List<Post>();
+
+        var postToRemove = posts.SingleOrDefault(p => p.Id == id);
+        if (postToRemove != null)
+        {
+            posts.Remove(postToRemove);
+            postsAsJson = JsonSerializer.Serialize(posts);
+            await File.WriteAllTextAsync(filePath, postsAsJson);
+        }
     }
 
-    public Task<Post> GetSingleAsync(int id)
+    public async Task<Post> GetSingleAsync(int id)
     {
-        throw new NotImplementedException();
+        string postsAsJson = await File.ReadAllTextAsync(filePath);
+        List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson) ?? new List<Post>();
+
+        return posts.SingleOrDefault(p => p.Id == id);
     }
 
     public IQueryable<Post> GetMany()
     {
-        throw new NotImplementedException();
+        string postsAsJson = File.ReadAllTextAsync(filePath).Result;
+        List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson) ?? new List<Post>();
+        return posts.AsQueryable();
     }
 
     public async Task<Post> GetByIdAsync(int postId)
@@ -53,12 +77,5 @@ public class PostFileRepository : IPostRepository
         string postsAsJson = await File.ReadAllTextAsync(filePath);
         List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson) ?? new List<Post>();
         return posts.SingleOrDefault(p => p.Id == postId);
-    }
-
-    public IQueryable<Post> GetAll()
-    {
-        string postsAsJson = File.ReadAllTextAsync(filePath).Result;
-        List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson) ?? new List<Post>();
-        return posts.AsQueryable();
     }
 }

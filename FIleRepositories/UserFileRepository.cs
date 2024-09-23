@@ -29,10 +29,13 @@ public class UserFileRepository : IUserRepository
         return user;
     }
 
-    public Task<IEnumerable> GetAllUsersAsync()
+    public async Task<IEnumerable> GetAllUsersAsync()
     {
-        throw new NotImplementedException();
+        string usersAsJson = await File.ReadAllTextAsync(filePath);
+        List<User> users = JsonSerializer.Deserialize<List<User>>(usersAsJson) ?? new List<User>();
+        return users; // Return the users as IEnumerable<User>
     }
+
 
     public async Task<User> GetByIdAsync(int userId)
     {
