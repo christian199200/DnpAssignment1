@@ -1,16 +1,17 @@
 using ApiContracts;
 using ApiContracts.Comment;
+using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 
-namespace WebAppi.Controllers;
+namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class CommentsController : ControllerBase
 {
-       private readonly ICommentRepository commentRepo;
+    private readonly ICommentRepository commentRepo;
 
     public CommentsController(ICommentRepository commentRepo)
     {

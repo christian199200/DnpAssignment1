@@ -2,11 +2,13 @@ using System.Security.Claims;
 using ApiContracts;
 using ApiContracts.Auth;
 using ApiContracts.User;
+using DTOs;
 using Entities;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 
-namespace WebAppi.Controllers;
+namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]

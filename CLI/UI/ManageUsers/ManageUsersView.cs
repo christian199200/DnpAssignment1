@@ -4,40 +4,57 @@ namespace CLI.UI.ManageUsers;
 
 public class ManageUsersView
 {
-    private readonly ListUsersView _listUsersView;
-    private readonly CreateUserView _createUserView;
+    private readonly IUserRepository userRepository;
 
     public ManageUsersView(IUserRepository userRepository)
     {
-        _listUsersView = new ListUsersView(userRepository);
-        _createUserView = new CreateUserView(userRepository);
+        this.userRepository = userRepository;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ShowAsync()
     {
+        Console.WriteLine();
         while (true)
         {
-            Console.WriteLine("User Management:");
-            Console.WriteLine("1. List Users");
-            Console.WriteLine("2. Create User");
-            Console.WriteLine("3. Exit");
+            PrintOptions();
+            string input = Console.ReadLine() ?? "";
+            if (string.IsNullOrEmpty(input))
+            {
+                Console.WriteLine("Please select an option.\n\n");
+                continue;
+            }
 
-            var choice = Console.ReadLine();
+            if ("<".Equals(input))
+            {
+                return;
+            }
 
-            switch (choice)
+            switch (input)
             {
                 case "1":
-                    await _listUsersView.ExecuteAsync();
+                    await new CreateUserView(userRepository).ShowAsync();
                     break;
-                case "2":
-                    await _createUserView.ExecuteAsync();
+                case "4":
+                    new ListUsersView(userRepository).Show();
                     break;
-                case "3":
-                    return; // Exit the loop and end the method
                 default:
-                    Console.WriteLine("Invalid option. Please try again.");
+                    Console.WriteLine("Invalid option, please try again.\n\n");
                     break;
             }
         }
+    }
+
+    private static void PrintOptions()
+    {
+        Console.WriteLine();
+        const string menuOptions = """
+                                   Please select:
+                                   1) Create new user
+                                   2) Update user
+                                   3) Delete user
+                                   4) View users
+                                   <) Back
+                                   """;
+        Console.WriteLine(menuOptions);
     }
 }

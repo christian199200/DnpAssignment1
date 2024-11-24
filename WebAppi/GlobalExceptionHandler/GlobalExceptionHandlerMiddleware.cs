@@ -1,6 +1,6 @@
 using Entities;
 
-namespace WebAppi.GlobalExceptionHandler;
+namespace WebAPI.GlobalExceptionHandler;
 
 public class GlobalExceptionHandlerMiddleware : IMiddleware
 {

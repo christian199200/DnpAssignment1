@@ -1,16 +1,17 @@
 using ApiContracts;
 using ApiContracts.User;
+using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 
-namespace WebAppi.Controllers;
+namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class UsersController : ControllerBase
 {
-        private readonly IUserRepository userRepo;
+    private readonly IUserRepository userRepo;
 
     public UsersController(IUserRepository userRepo)
     {

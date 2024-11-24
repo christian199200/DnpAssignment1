@@ -1,19 +1,15 @@
 using FIleRepositories;
 using RepositoryContracts;
-using WebAppi.GlobalExceptionHandler;
-using WebAppi.GlobalExceptionHandler;
+using WebAPI.GlobalExceptionHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
-
+// Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 builder.Services.AddScoped<IPostRepository, PostFileRepository>();
 builder.Services.AddScoped<IUserRepository, UserFileRepository>();
@@ -31,7 +27,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.Run();

@@ -1,4 +1,8 @@
+using BlazorApp.Auth;
+using BlazorApp.Components;
+using BlazorApp.Services;
 using BlazorApp1.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddScoped(services => new HttpClient
+    {
+        BaseAddress = new Uri("https://localhost:7005")
+    }
+);
+
+builder.Services.AddScoped<IUserService, HttpUserService>();
+builder.Services.AddScoped<IPostService, HttpPostService>();
+builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthProvider>();
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

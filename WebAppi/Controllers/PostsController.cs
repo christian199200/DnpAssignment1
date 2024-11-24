@@ -2,19 +2,18 @@ using ApiContracts;
 using ApiContracts.Comment;
 using ApiContracts.Post;
 using ApiContracts.User;
+using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 
-using Microsoft.AspNetCore.Mvc;
-
-namespace WebAppi.Controllers;
+namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class PostsController : ControllerBase
 {
-        private readonly IPostRepository postRepo;
+    private readonly IPostRepository postRepo;
 
     public PostsController(IPostRepository postRepo)
     {

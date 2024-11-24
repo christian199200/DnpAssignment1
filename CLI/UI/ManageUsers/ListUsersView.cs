@@ -1,44 +1,36 @@
-
-using RepositoryContracts;
 using Entities;
+using RepositoryContracts;
+
 namespace CLI.UI.ManageUsers;
 
 public class ListUsersView
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserRepository userRepository;
 
     public ListUsersView(IUserRepository userRepository)
     {
-        _userRepository = userRepository;
+        this.userRepository = userRepository;
     }
 
-    public async Task ExecuteAsync()
+    public void Show()
     {
-        // Retrieve all users asynchronously from the repository
-        IEnumerable<User> users;
-        try
+        Console.WriteLine();
+        ViewUsersAsync();
+    }
+    
+    private void ViewUsersAsync()
+    {
+        IEnumerable<User> manyAsync = userRepository.GetMany();
+        List<User> users = manyAsync.OrderBy(u => u.Id).ToList();
+        
+        Console.WriteLine("Users:");
+        Console.WriteLine("[");
+        foreach (User user in users)
         {
-            users = (IEnumerable<User>)await _userRepository.GetAllUsersAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred while retrieving users: {ex.Message}");
-            return;
-        }
-
-        // Check if there are any users
-        if (!users.Any())
-        {
-            Console.WriteLine("No users found.");
-            return;
+            Console.WriteLine($"\tID: {user.Id}, Name: {user.UserName}");
         }
 
-        // Display the list of users
-        Console.WriteLine("\n-- List of Users --");
-        foreach (var user in users)
-        {
-            // Ensure that the properties are accessible and correct
-            Console.WriteLine($"ID: {user.Id}, Username: {user.UserName}");
-        }
+        Console.WriteLine("]");
+        Console.WriteLine();
     }
 }

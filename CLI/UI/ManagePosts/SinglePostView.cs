@@ -1,41 +1,63 @@
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.ManagePosts;
 
-public class SinglePostView
+internal class SinglePostView
 {
-    private readonly IPostRepository _postRepository;
-    private readonly ICommentRepository _commentRepository;
+    private readonly IPostRepository postRepository;
+    private readonly ICommentRepository commentRepository;
+    private readonly IUserRepository userRepository;
+    private readonly int postId;
 
-    public SinglePostView(IPostRepository postRepository, ICommentRepository commentRepository)
+    public SinglePostView(IPostRepository postRepository, ICommentRepository commentRepository, IUserRepository userRepository, int postId)
     {
-        _postRepository = postRepository;
-        _commentRepository = commentRepository;
+        this.postRepository = postRepository;
+        this.postId = postId;
+        this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ShowAsync()
     {
-        Console.WriteLine("Enter Post ID:");
-        if (!int.TryParse(Console.ReadLine(), out var postId))
+        Post post = await postRepository.GetSingleAsync(postId);
+        Console.WriteLine($"-----------------------------------------------------");
+        Console.WriteLine($"Title: {post.Title}");
+        Console.WriteLine($"-----------------------------------------------------");
+        Console.WriteLine($"Content: {post.Body}");
+        Console.WriteLine($"-----------------------------------------------------");
+        
+        // use comment repository to load all comments for this post. The Where() method is used to filter the comments by the post id.
+        List<Comment> comments = commentRepository.GetMany().Where(c => c.PostId == postId).ToList();
+
+        foreach (Comment comment in comments)
         {
-            Console.WriteLine("Invalid post ID");
-            return;
+            User user = await userRepository.GetSingleAsync(comment.UserId); // For each comment, load the associated user to get the username.
+            Console.WriteLine($"{user.UserName}: {comment.Body}");
         }
 
-        var post = await _postRepository.GetSingleAsync(postId);
-        if (post == null)
-        {
-            Console.WriteLine("Post not found.");
-            return;
-        }
+        Console.WriteLine();
+        const string options = """
+                               1) Add comment;
+                               <) Back
+                               """;
+        Console.WriteLine(options);
 
-        Console.WriteLine($"Post ID: {post.Id}\nTitle: {post.Title}\nBody: {post.Body}");
-
-        var comments = _commentRepository.GetMany().Where(c => c.PostId == postId).ToList();
-        Console.WriteLine("\nComments:");
-        foreach (var comment in comments)
+        while (true)
         {
-            Console.WriteLine($"User {comment.UserId}: {comment.Body}");
+            string? input = Console.ReadLine();
+            if (string.IsNullOrEmpty(input))
+            {
+                Console.WriteLine("Please select a valid option.");
+                continue;
+            }
+
+            if ("<".Equals(input))
+            {
+                return;
+            }
+
+            Console.WriteLine("Not supported");
         }
     }
 }
