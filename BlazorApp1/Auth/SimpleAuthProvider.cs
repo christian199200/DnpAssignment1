@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using System.Text.Json;
-using ApiContracts;
-using ApiContracts.Auth;
-using ApiContracts.User;
+// using ApiContracts;
+// using ApiContracts.Auth;
+// using ApiContracts.User;
 using DTOs;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
@@ -26,7 +26,11 @@ public class SimpleAuthProvider : AuthenticationStateProvider
     {
         HttpResponseMessage response = await httpClient.PostAsJsonAsync(
             "auth/login",
-            new LoginRequest(userName, password));
+            value: new LoginRequest()
+            {
+                Email = null,
+                Password = null
+            });
 
         string content = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)

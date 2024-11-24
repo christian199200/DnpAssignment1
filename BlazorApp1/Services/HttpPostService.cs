@@ -1,8 +1,9 @@
 using System.Text.Json;
-using ApiContracts;
-using ApiContracts.Comment;
-using ApiContracts.Post;
-using ApiContracts.User;
+// using ApiContracts;
+// using ApiContracts.Comment;
+// using ApiContracts.Post;
+// using ApiContracts.User;
+using DTOs;
 
 namespace BlazorApp.Services;
 
