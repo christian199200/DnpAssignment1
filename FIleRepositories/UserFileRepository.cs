@@ -29,12 +29,32 @@ public class UserFileRepository : IUserRepository
         return user;
     }
 
-    public async Task<IEnumerable> GetAllUsersAsync()
+    public Task UpdateAsync(User user)
     {
-        string usersAsJson = await File.ReadAllTextAsync(filePath);
-        List<User> users = JsonSerializer.Deserialize<List<User>>(usersAsJson) ?? new List<User>();
-        return users; // Return the users as IEnumerable<User>
+        throw new NotImplementedException();
     }
+
+    public Task DeleteAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<User> GetSingleAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IQueryable<User> GetMany()
+    {
+        throw new NotImplementedException();
+    }
+
+    // public async Task<IEnumerable> GetAllUsersAsync()
+    // {
+    //     string usersAsJson = await File.ReadAllTextAsync(filePath);
+    //     List<User> users = JsonSerializer.Deserialize<List<User>>(usersAsJson) ?? new List<User>();
+    //     return users; // Return the users as IEnumerable<User>
+    // }
 
 
     public async Task<User> GetByIdAsync(int userId)
@@ -43,16 +63,16 @@ public class UserFileRepository : IUserRepository
         List<User> users = JsonSerializer.Deserialize<List<User>>(usersAsJson) ?? new List<User>();
         return users.SingleOrDefault(u => u.Id == userId);
     }
-
-    Task IUserRepository.AddAsync(User user)
-    {
-        return AddAsync(user);
-    }
-
+    
     public IQueryable<User> GetAll()
     {
         string usersAsJson = File.ReadAllTextAsync(filePath).Result;
         List<User> users = JsonSerializer.Deserialize<List<User>>(usersAsJson) ?? new List<User>();
         return users.AsQueryable();
+    }
+
+    Task<User> IUserRepository.AddAsync(User user)
+    {
+        return AddAsync(user);
     }
 }

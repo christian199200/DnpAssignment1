@@ -1,5 +1,5 @@
-using ApiContracts;
-using ApiContracts.Comment;
+// using ApiContracts;
+// using ApiContracts.Comment;
 using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -93,7 +93,7 @@ public class CommentsController : ControllerBase
                 AuthorUserId = c.UserId,
                 PostId = c.PostId
             })
-            .ToList();
+            .ToList<CommentDto>();
 
         return Ok(comments);
     }
