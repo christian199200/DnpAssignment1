@@ -13,4 +13,9 @@ public class AppContext : DbContext
     {
         optionsBuilder.UseSqlite("Data Source=app.db");
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Comment>().HasKey(c=> new {c.PostId, c.UserId});
+    }
 }
